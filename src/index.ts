@@ -1,8 +1,9 @@
 import app from './app';
 
-app.use('/', (req, res) => {
-	res.send('hola express con eslint');
-});
+import connectDB from './config/db';
+
+connectDB();
+
 
 
 const PORT = process.env.PORT || 4000;
