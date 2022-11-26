@@ -1,5 +1,6 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, ObjectId, isValidObjectId } from 'mongoose';
 import { IAdmin } from '../interface';
+import generateToken from '../helpers/generateToken';
 
 
 const adminSchema = new Schema<IAdmin>({
@@ -21,6 +22,7 @@ const adminSchema = new Schema<IAdmin>({
   },
   token:{
     type: String,
+    default: generateToken()
   },
   confirmed: {
     type: Boolean,
@@ -31,6 +33,6 @@ const adminSchema = new Schema<IAdmin>({
   versionKey: false,
 });
 
-const Admin = model('Admins', adminSchema);
+const Admin = model<IAdmin>('Admins', adminSchema);
 
 export default Admin;
