@@ -29,14 +29,14 @@ export const addNewAdmin: RequestHandler = async (req, res) => {
 }
 
 export const confirmAccount: RequestHandler = async (req, res) => {
-	const isValid = mongoose.isObjectIdOrHexString(req.params.id);
+	const { token } = req.params;
 
-	if(!isValid) {
+	const admin = await Admin.findOne({token});
+
+	if(!admin) {
 		const error = new Error('Cuenta no encontrada');
 		return res.status(404).json({msg: error.message});
 	}
-
-	const admin:IAdmin | any  = await Admin.findById({_id: req.params.id});
 
 	try {
 		if(admin != null) {
@@ -64,7 +64,7 @@ export const forgotPasswordSendEmail = async (req:Request, res:Response) => {
 		return res.status(404).json({ msg: error.message });
 	}
 
-	if(admin.token !== '') {
+	if(admin.token !== null) {
 		const error = new Error('Ya se ha enviado un correo');
 		return res.status(429).json({ msg: error.message });
 	}
@@ -77,6 +77,46 @@ export const forgotPasswordSendEmail = async (req:Request, res:Response) => {
 
 		res.status(200).json({msg: 'Se ha enviado un correo con las instrucciones'});
 
+		
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+export const checkToken = async (req:Request, res:Response) => {
+	const { token } = req.params;
+
+	const admin:IAdmin | null = await Admin.findOne({token});
+
+	if(admin === null) {
+		const error = new Error('Token no valido/no encontrado');
+		return res.status(404).json({msg: error.message});
+	}
+
+	res.json({msg: 'Escribe la nueva contraseña'});
+}
+
+export const savePassword = async (req:Request, res:Response) => {
+	const { password } = req.body;
+
+	const admin:IAdmin | any = await Admin.findOne({token: req.params.token});
+
+	if(admin === null) {
+		const error = new Error('Cuenta no encontrada');
+		return res.status(404).json({msg: error.message});
+	}
+
+	if(await admin.checkPassword(password)) {
+		const error = new Error('La nueva contraseña no puede ser igual que la anterior');
+		return res.status(400).json({msg: error.message});
+	}
+
+	try {
+		admin.token = null;
+		admin.password = password;
+		await admin.save();
+
+		res.status(200).json({msg: 'Contraseña modificada correctamente'});
 		
 	} catch (error) {
 		console.log(error);
