@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 
 import Admin from "../models/Admin";
 import generateToken from '../helpers/generateToken';
+import generateJWT from '../helpers/generarteJWT';
 
 export const addNewAdmin: RequestHandler = async (req, res) => {
 	const { email } = req.body;
@@ -121,4 +122,29 @@ export const savePassword = async (req:Request, res:Response) => {
 	} catch (error) {
 		console.log(error);
 	}
+}
+
+export const login = async (req:Request, res:Response) => {
+	const { email, password } = req.body;
+	
+	const admin: IAdmin | any = await Admin.findOne({email});
+
+	
+	if(admin === null) {
+		const error = new Error('Cuenta no registrada aún');
+		return res.status(404).json({msg: error.message});
+	}
+
+	if(!admin.confirmed) {
+		const error = new Error('Tu cuenta no ha sido confirmada aún');
+		return res.status(404).json({msg: error.message});
+	}
+
+	if(await admin.checkPassword(password)) {
+		res.status(200).json({token: generateJWT(admin._id)})
+	}else{
+		const error = new Error('La contraseña es incorrecta');
+		return res.status(404).json({msg: error.message});
+	}
+
 }

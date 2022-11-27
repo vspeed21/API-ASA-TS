@@ -9,6 +9,7 @@ router.get('/confirm/:token', admin.confirmAccount);
 router.post('/forgot-password', admin.forgotPasswordSendEmail);
 router.get('/verify-token/:token', admin.checkToken);
 router.post('/save-password/:token', admin.savePassword);
+router.post('/login', admin.login);
 
 
 export default router;
