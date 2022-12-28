@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import config from '../config';
+import { IAdmin } from '../interface';
 import Admin from '../models/Admin';
 
 interface IDecoded {
@@ -9,13 +10,14 @@ interface IDecoded {
   exp: number,
 }
 
-const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
+const checkAuth = async (req:Request, res: Response, next: NextFunction) => {
   let token = req.headers.authorization?.split(' ')[1];
 
   if(token) {
     try {
       const decoded = jwt.verify(token, config.JWT_SECRET) as IDecoded;
-      req.admin = await Admin.findById(decoded.id);
+      req.admin = await Admin.findById(decoded.id) as IAdmin;
+      
       return next();
     } catch (error) {
       console.log(error);
