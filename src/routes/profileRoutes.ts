@@ -4,7 +4,9 @@ import * as profile from '../controllers/profileControllers';
 
 const router = Router();
     
-router.get('/perfil', checkAuth, profile.showProfile);
+router.get('/profileList', checkAuth, profile.showProfile);
 
+router.route('/')
+  .post(checkAuth, profile.addProfile)
 
 export default router;
