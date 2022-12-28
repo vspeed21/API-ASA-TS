@@ -1,6 +1,7 @@
 import { Schema } from 'mongoose';
 
 export interface IAdmin {
+  _id?: Schema.Types.ObjectId,
   name: string,
   email: string,
   password: string,
@@ -13,5 +14,6 @@ export interface IProfile {
   screen: string,
   pin: number
   deadline: string,
-  admin: Schema.Types.ObjectId,
+  admin?: Schema.Types.ObjectId,
+  save: () => void
 }
