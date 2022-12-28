@@ -17,3 +17,8 @@ export const addProfile = async(req:Request, res:Response) => {
     console.log(error);
   }
 }
+
+export const getProfiles = async (req:Request, res:Response):Promise<Response> => {
+  const profiles = await Profile.find().where('admin').equals(req.admin?._id);
+  return res.json(profiles)
+}

@@ -8,5 +8,6 @@ router.get('/profileList', checkAuth, profile.showProfile);
 
 router.route('/')
   .post(checkAuth, profile.addProfile)
+  .get(checkAuth, profile.getProfiles)
 
 export default router;
