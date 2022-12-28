@@ -1,6 +1,5 @@
 {
   "name": "asa-typescript",
-  "type": "modules",
   "version": "1.0.0",
   "description": "Api para Admin Streaming Account",
   "main": "index.js",
