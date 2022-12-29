@@ -15,5 +15,6 @@ export interface IProfile {
   pin: number
   deadline: string,
   admin?: Schema.Types.ObjectId,
-  save: () => void
+  save: () => void,
+  deleteOne: () => void,
 }
