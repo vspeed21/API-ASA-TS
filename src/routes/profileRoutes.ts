@@ -12,5 +12,6 @@ router.route('/')
 
 router.route('/:id')
   .put(checkAuth, profile.updateProfile)
+  .delete(checkAuth, profile.destroyProfile)
 
 export default router;

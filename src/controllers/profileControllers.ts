@@ -57,3 +57,35 @@ export const updateProfile = async (req:Request, res:Response) => {
     console.log(error)
   }
 }
+
+export const destroyProfile = async (req:Request, res:Response) => {
+  const { id } = req.params;
+
+  const isValid:boolean = isObjectIdOrHexString(id);
+  if(!isValid){
+    const error = new Error("Invalid id");
+    return res.status(404).json({msg: error.message});
+  }
+
+  const profile:IProfile | null = await Profile.findById(id);
+  
+  if(!profile){
+    const error = new Error("Profile not found");
+    return res.status(404).json({msg: error.message});
+  }
+
+  if(profile.admin?.toString() !== req.admin?._id?.toString()) {
+    return res.json({msg: 'Unauthorizated'})
+  }
+
+  try {
+    const profileDeleted = await profile.deleteOne();
+    res.json({
+      msg: 'Profile deleted succesfully',
+      profileDeleted,
+    })
+
+  } catch (error) {
+    console.log(error)
+  }
+}
