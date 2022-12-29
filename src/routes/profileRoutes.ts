@@ -10,4 +10,7 @@ router.route('/')
   .post(checkAuth, profile.addProfile)
   .get(checkAuth, profile.getProfiles)
 
+router.route('/:id')
+  .put(checkAuth, profile.updateProfile)
+
 export default router;
