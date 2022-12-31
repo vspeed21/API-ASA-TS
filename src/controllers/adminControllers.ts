@@ -1,13 +1,14 @@
 import { RequestHandler, Response, Request } from 'express';
 import { IAdmin } from '../interface';
-import mongoose from 'mongoose';
 
 import Admin from "../models/Admin";
 import generateToken from '../helpers/generateToken';
 import generateJWT from '../helpers/generarteJWT';
+import sendEmailSignUp from '../helpers/signUpEmail';
 
 export const addNewAdmin: RequestHandler = async (req, res) => {
 	const { email } = req.body;
+  const host = email.split('@')[1].split('.')[0];
 
 	const adminExists:IAdmin | null  = await Admin.findOne({ email });
 
@@ -20,7 +21,12 @@ export const addNewAdmin: RequestHandler = async (req, res) => {
 		const admin = new Admin(req.body);
 		await admin.save();
 
-		//Enviar email de registro
+		sendEmailSignUp({
+      name: admin.name,
+      email,
+      token: admin.token,
+      host,
+    })
 
 		res.status(201).json({ msg: 'Check your email to confirm your account' });
 
