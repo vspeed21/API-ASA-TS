@@ -5,6 +5,7 @@ import Admin from "../models/Admin";
 import generateToken from '../helpers/generateToken';
 import generateJWT from '../helpers/generarteJWT';
 import sendEmailSignUp from '../helpers/signUpEmail';
+import sendEmailPassword from '../helpers/forgotPasswordEmail';
 
 export const addNewAdmin: RequestHandler = async (req, res) => {
 	const { email } = req.body;
@@ -81,6 +82,12 @@ export const forgotPasswordSendEmail = async (req:Request, res:Response) => {
 			admin.token = generateToken();
 			await admin.save();
 		}
+
+    sendEmailPassword({
+      email,
+      name: admin.name,
+      token: admin.token,
+    })
 
 		res.status(200).json({msg: 'Email has been sent'});
 
