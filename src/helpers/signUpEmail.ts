@@ -24,7 +24,7 @@ async function sendEmailSignUp({name, email, token, host}:Data):Promise<void> {
     to: email,
     subject: 'Confirm your account in Admin Streaming Account (ASA)',
     html: `<p>Dear ${name}, confirm your account to start managing your profiles.</p>
-    <p>Confirm in the following link: <a href="${process.env.FRONTEND_URL}/confirm/${token}">Confirm</a></p>
+    <p>Confirm in the following link: <a href="${process.env.FRONTEND_URL}/auth/confirm/${token}">Confirm</a></p>
 
     <p>If you didn't create this account, ignore this message.</p>
     `,
