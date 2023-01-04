@@ -7,6 +7,7 @@ export interface IAdmin {
   password: string,
   token: string | null,
   confirmed: boolean,
+  save: () => void,
 }
 
 export interface IProfile {
