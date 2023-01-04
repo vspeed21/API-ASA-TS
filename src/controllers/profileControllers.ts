@@ -13,7 +13,7 @@ export const addProfile = async(req:Request, res:Response) => {
   
   try {
     await profile.save();
-    return res.status(200).json({msg: 'profile created succesfully'});
+    return res.status(200).json({msg: 'profile created succesfully', profile});
   } catch (error) {
     console.log(error);
   }
