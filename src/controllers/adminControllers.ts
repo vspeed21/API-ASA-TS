@@ -6,6 +6,7 @@ import generateToken from '../helpers/generateToken';
 import generateJWT from '../helpers/generarteJWT';
 import sendEmailSignUp from '../helpers/signUpEmail';
 import sendEmailPassword from '../helpers/forgotPasswordEmail';
+import { isObjectIdOrHexString } from 'mongoose';
 
 export const addNewAdmin: RequestHandler = async (req, res) => {
 	const { email } = req.body;
@@ -160,4 +161,32 @@ export const login = async (req:Request, res:Response) => {
 		return res.status(404).json({msg: error.message});
 	}
 
+}
+
+//Public Requests
+export const updateProfile = async (req: Request, res:Response) => {
+  const {id} = req.params;
+ 
+  const isValid:boolean = isObjectIdOrHexString(id);
+  if(!isValid){
+    const error = new Error("Invalid id");
+    return res.status(404).json({msg: error.message});
+  }
+
+  const admin:IAdmin | null = await Admin.findById(id);
+  if(!admin) {
+    const error = new Error("Admin not found");
+    return res.status(404).json({msg: error.message});
+  }
+
+  try {
+    admin.name = req.body.name || admin.name
+    admin.email = req.body.email || admin.email
+
+    await admin.save();
+    res.status(200).json({msg: 'Profile Updated successfully'});
+
+  } catch (error) {
+    console.log(error);
+  }
 }

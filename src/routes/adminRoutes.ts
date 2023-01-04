@@ -1,5 +1,6 @@
 import { Router } from "express";
 import * as admin from '../controllers/adminControllers';
+import checkAuth from "../middleware/checkAuth";
 
 const router = Router();
 
@@ -11,5 +12,7 @@ router.get('/verify-token/:token', admin.checkToken);
 router.post('/save-password/:token', admin.savePassword);
 router.post('/login', admin.login);
 
+//Private Requests
+router.put('/profile/:id', checkAuth, admin.updateProfile);
 
 export default router;
