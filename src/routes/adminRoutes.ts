@@ -14,5 +14,6 @@ router.post('/login', admin.login);
 
 //Private Requests
 router.put('/profile/:id', checkAuth, admin.updateProfile);
+router.put('/change-password', checkAuth, admin.changePassword);
 
 export default router;

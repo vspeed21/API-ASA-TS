@@ -163,7 +163,7 @@ export const login = async (req:Request, res:Response) => {
 
 }
 
-//Public Requests
+//Private Requests
 export const updateProfile = async (req: Request, res:Response) => {
   const {id} = req.params;
  
@@ -185,6 +185,41 @@ export const updateProfile = async (req: Request, res:Response) => {
 
     await admin.save();
     res.status(200).json({msg: 'Profile Updated successfully'});
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const changePassword = async (req: Request, res: Response) => {
+  const adminId = req.admin?._id;
+
+  const isValid:boolean = isObjectIdOrHexString(adminId);
+  if(!isValid){
+    const error = new Error("Invalid id");
+    return res.status(404).json({msg: error.message});
+  }
+
+  const admin:IAdmin | any = await Admin.findById(adminId);
+  if(!admin) {
+    const error = new Error("Account not found");
+    return res.status(404).json({msg: error.message});
+  }
+
+  if(!await admin.checkPassword(req.body.current)) {
+    const error = new Error('Current password is incorrect');
+    return res.status(404).json({msg: error.message});
+  }
+
+  if(await admin.checkPassword(req.body.new)) {
+    const error = new Error('The new password cannot be the same as the current password');
+    return res.status(404).json({msg: error.message});
+  }
+
+  try {
+    admin.password = req.body.new;
+    await admin.save();
+    res.status(200).json({msg: 'Password modified successfully'});
 
   } catch (error) {
     console.log(error);
