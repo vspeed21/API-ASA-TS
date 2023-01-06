@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node ./build/index.js",
     "dev": "ts-node-dev --files src/index.ts --watch",
-    "build": "tsc",
+    "build": "npm install && tsc",
     "lint": "eslint ."
   },
   "keywords": [
